@@ -1,21 +1,38 @@
-# Prueba Tecnica: "Geospatial Data Developer – Agro Take-Home Challenge"
+## Contexto General
 
-## Contesto general: 
-### El contenido del repositorio corresponde al desarrollo de una prueba técnica descripta en este repositorio (https://github.com/cambium-earth/agtech-gdd-test?tab=readme-ov-file).
+El contenido del repositorio corresponde al desarrollo de una prueba técnica descripta en este repositorio: [hipervínculo al repo].
 
-### En este repositrio podemos encontrar:
+En este repositorio podemos encontrar:
 
-#### -Configuración del entorno Dockerizado y pasos para configurarlo (aqui)
-#### -Conjunto de scripts para gestionar datos y cargarlos en una base de datos
-#### -Cuadernos Jupyter para realizar el preprocesamiento y Postprocesamiento de los datos espaciales
+* Configuración del entorno **Dockerizado** y pasos para su uso (aquí).
+* Conjunto de *scripts* para gestionar datos y cargarlos en una base de datos.
+* Cuadernos Jupyter para realizar el preprocesamiento y el posprocesamiento de los datos espaciales.
 
-# Parte 1. Configuración de la infraestructura con Docker y carga de los datos:
-#### -Se creó un entorno basado en Docker Compose para el desarrollo del proyecto. Este entorno, esta compuesto por una base de datos PostgreSQL(v16) donde se le instalo la extensión PostGIS(v3.5) y la extensión h3-pg (Uber), y cuenta con un contenedor de Python 3.9 y sus principales dependencias espaciales.
-#### -La carga de los datos a la base de datos se realizo por medio de un script en Python que se ejecuta por consola.
+---
 
-# Parte 2.Análisis de los datos: pre y posprocesamiento
-#### -Preprocesamiento: por fuera del entorno dockerizado se realizo una exploracion y preparacion de la informacion espacial. En esta etapa, se hiso uso de las herramientas de QGIS para la inspeccion visual y Rmarckdown para la validacion y limpieza de datos.
-#### -Posprocesamiento: se utilizan los datos cargados en la Base de datos y se utiliza Jupyter Notebook para analizar los conjuntos de datos y crear visualizaciones. 
+## Parte 1. Configuración de la Infraestructura con Docker y Carga de los Datos
+
+### Infraestructura
+
+* Se creó un entorno basado en **Docker Compose** para el desarrollo del proyecto. Este entorno **está compuesto** por:
+    * Una base de datos **PostgreSQL (v16)** donde **se le instaló** la extensión **PostGIS (v3.5)** y la extensión **h3-pg (Uber)**.
+    * Un contenedor de **Python 3.9** y sus principales dependencias espaciales.
+    * (Puede encontrar más detalles sobre esta configuración aquí: [hipervínculo]).
+* La carga de los datos a la base de datos **se realizó** por medio de un *script* en Python que se ejecuta por consola.
+
+---
+
+## Parte 2. Análisis de los Datos: Pre y Posprocesamiento
+
+### Preprocesamiento
+
+* Por fuera del entorno Dockerizado **se realizó** una exploración y preparación de la información espacial.
+* En esta etapa, **se hizo** uso de las herramientas de **QGIS** para la inspección visual y **RMarkdown** para la validación y limpieza de datos.
+
+### Posprocesamiento
+
+* Se utilizan los datos cargados en la Base de datos.
+* Se emplea **Jupyter Notebook** para analizar los conjuntos de datos, ejecutar el análisis espacial avanzado y crear visualizaciones. 
 
 # Estructura de archivos del repositorio: 
 prueba_tecnica/
