@@ -37,37 +37,36 @@ En este repositorio podemos encontrar:
 # Estructura de archivos del repositorio: 
 prueba_tecnica/
 └── pt_agtech_Ramiro_Manzo/
-    ├── docker-compose.yml              
-    ├── REDMI.md                        
-    ├── README.md                        
-    │
-    ├── postgis_h3/                     
-    │   ├── Dockerfile
-    │   └── para_el_redmi.txt           
-    │
-    ├── python_geo/                     
-    │   ├── Dockerfile
-    │   └── Preprocesamiento/
-    │       ├── altimetry_kriging.geojson
-    │       ├── ec_subsurface_kriging.geojson
-    │       ├── ec_surface_kriging.geojson
-    │       ├── Grid_final.geojson
-    │       ├── preprocessing.pdf
-    │       └── preprocessing.Rmd
-    │
-    ├── workspace/                      
-    │   ├── notebooks/
-    │   │   ├── Bonus.ipynb
-    │   │   ├── posprocessing.ipynb
-    │   │   └── Preguntas_finales.ipynb
-    │   │
-    │   └── scripts/
-    │       └── load_data.py           
-    │
-    └── data/                           
-        ├── Grid_final.geojson
-        ├── la_magdalena_L4.geojson
-        ├── soy_performance_2019_2021_2023.geojson
-        └── veris_data.gpkg
+├── docker-compose.yml
+├── REDMI.md
+├── README.md
+├── flujo.txt
 
+├── postgis_h3/
+│   ├── Dockerfile
+│   └── para_el_redmi.txt
 
+├── python_geo/
+│   ├── Dockerfile
+│   └── Preprocesamiento/
+│       ├── altimetry_kriging.geojson
+│       ├── ec_subsurface_kriging.geojson
+│       ├── ec_surface_kriging.geojson
+│       ├── Grid_final.geojson
+│       ├── preprocessing.pdf
+│       └── preprocessing.Rmd
+
+├── workspace/
+│   ├── notebooks/
+│   │   ├── Bonus.ipynb
+│   │   ├── posprocessing.ipynb
+│   │   └── Preguntas_finales.ipynb
+│   │
+│   └── scripts/
+│       └── load_data.py
+
+└── data/
+    ├── Grid_final.geojson
+    ├── la_magdalena_L4.geojson
+    ├── soy_performance_2019_2021_2023.geojson
+    └── veris_data.gpkg
