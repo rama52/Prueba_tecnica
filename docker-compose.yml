@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  db:
+    build: ./postgis_h3       # tu Dockerfile de PostGIS con H3
+    container_name: pg_geo
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: agtech_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./data:/data
+    networks:
+      - geo_network
+
+  python:
+    build: ./python_geo       # tu Dockerfile de Python
+    container_name: python_geo
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./workspace:/workspace
+      - ./data:/data 
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: agtech_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    depends_on:
+      - db
+    networks:
+      - geo_network
+
+volumes:
+  pgdata:
+
+networks:
+  geo_network:
+    driver: bridge
+

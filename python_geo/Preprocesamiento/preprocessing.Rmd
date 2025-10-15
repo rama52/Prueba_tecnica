@@ -1,0 +1,365 @@
+---
+title: "Preprocesamiento"
+date: "2025-10-13"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+# Datos y eleccion de herramientas:
+
+Para la etapa inicial del proyecto se optó por trabajar con QGIS y la consola de R con el objetivo de realizar un preprocesamiento previo al Analisis de los datos espaciales.
+
+La elección de estas herramientas se basó en que ya se contaba con desarrollos y rutinas previas en este entorno, lo que permitió optimizar tiempos y asegurar la coherencia espacial de la información.
+
+De esta forma, se priorizó el uso de QGIS para la inspección visual, validación y limpieza de geometrías, y R (con librerías como sf y dplyr, h3jsr, automap y gstap) para la generación de grillas hexagonales, cálculos de área y la estructuración de los atributos.
+
+Esta instancia permitió dejar los datos listos y estandarizados para la etapa 2 del proyecto
+
+
+# Grilla H3 formato Poligono: a partir del limite del lote se genero los hexagonos con resolucion 12  
+
+```{r}
+setwd("C://Users//Ramiro Manzo//Downloads//pt_rmarckdown//rstudio-project-agro//data_lh")
+library(sf)
+library(dplyr)
+library(h3jsr)
+
+Shape <- sf::st_read("la_magdalena_L4.geojson")
+SRC <- st_crs(Shape)
+Limite_SinZ <- st_zm(Shape)
+Limite_SinZ <- st_make_valid(Limite_SinZ)
+File_rep <- st_transform(Limite_SinZ, crs = 4326)
+
+Resolucion_H3 <- 12          # Resolución
+File_rep_hex <- polygon_to_cells(File_rep, res = Resolucion_H3)
+Hex_H3_sf <- h3jsr::cell_to_polygon(input = File_rep_hex, simple = FALSE)
+
+# Variables de ejemplo:
+Cliente       <- "Garruchos agropecuaria"
+Season        <- "2019-2020"
+Region_CREA   <- "Centro"
+Farm          <- "La Magdalena"
+Field         <- "L4"
+Cultivo       <- "Soja"
+Hibrido       <- "SojaX"
+
+Hex_H3_sf <- Hex_H3_sf %>%
+  mutate(
+    Empresa       = Cliente,
+    Campania      = Season,
+    Region        = Region_CREA,
+    Campo         = Farm,
+    Lote          = Field,
+    Actividad     = Cultivo,
+    Material      = Hibrido,
+    Hexagono      = row_number(),
+    Id_Hexagono   = h3_address
+  )
+
+# Calcular áreas
+Hex_H3_sf <- Hex_H3_sf %>%
+  mutate(
+    Area_lote     = round(as.numeric(st_area(Limite_SinZ) / 10000), 3),
+    Area_hexagono = round(as.numeric(st_area(geometry) / 10000), 5)
+  )
+
+centroids <- st_centroid(Hex_H3_sf)
+Hex_H3_sf <- Hex_H3_sf %>%
+  mutate(
+    Long = st_coordinates(centroids)[,1],
+    Lat  = st_coordinates(centroids)[,2]
+  )
+
+orden_columnas <- c("Empresa","Campania","Region","Campo","Lote",
+                    "Actividad","Material","Area_lote","Hexagono",
+                    "Id_Hexagono","Area_hexagono","Lat","Long")
+
+cols_existentes <- intersect(orden_columnas, names(Hex_H3_sf))
+Hex_H3_sf <- Hex_H3_sf %>% select(all_of(cols_existentes), geometry)
+
+# Reproyectar
+Grid <- st_transform(Hex_H3_sf, crs = SRC)
+
+print(head(Grid))
+```
+# Campañas de Soja:
+Se separan las 3 campañas por separado: 2019, 2021 y 2023
+
+```{r}
+setwd("C://Users//Ramiro Manzo//Downloads//pt_rmarckdown//rstudio-project-agro//data_lh")
+library(sf)
+library(dplyr)
+
+gdf <- st_read("soy_performance_2019_2021_2023.geojson")
+print(names(gdf))
+
+# Renombrar columnas con sufijo
+add_suffix <- function(df, year) {
+  df %>%
+    rename_with(~paste0(., "_", year), .cols = !c("geometry"))
+}
+
+# Filtrar por campaña
+gdf_2019 <- gdf %>% filter(campaign_year == 2019) %>% add_suffix(2019)
+gdf_2021 <- gdf %>% filter(campaign_year == 2021) %>% add_suffix(2021)
+gdf_2023 <- gdf %>% filter(campaign_year == 2023) %>% add_suffix(2023)
+
+# Exportar
+st_write(gdf_2019, "soy_performance_2019.geojson", delete_dsn = TRUE)
+st_write(gdf_2021, "soy_performance_2021.geojson", delete_dsn = TRUE)
+st_write(gdf_2023, "soy_performance_2023.geojson", delete_dsn = TRUE)
+
+```
+
+# Join espacial:
+
+Considerando que los datos de Performance de soja de las diferentes campañas estan vinculados al centroide de cada hexagono de la Grilla H3, se realizo un Join espacial de manera de juntar esa informacion en una sola capa y facilitar posteriores analisis.
+
+```{r}
+# Directorio
+setwd("C://Users//Ramiro Manzo//Downloads//pt_rmarckdown//rstudio-project-agro//data_lh")
+library(sf)
+library(dplyr)
+
+#grid <- st_read("Grid.geojson")  # Debe tener Id_Hexagono
+grid <- Grid
+
+soy_2019 <- st_read("soy_performance_2019.geojson")
+soy_2021 <- st_read("soy_performance_2021.geojson")
+soy_2023 <- st_read("soy_performance_2023.geojson")
+
+# Función
+agregar_al_grid <- function(grid_sf, soy_sf) {
+  # Join espacial: asignar hex a cada punto
+  joined <- st_join(soy_sf, grid_sf[, "Id_Hexagono"], join = st_within)
+  
+  agregados <- joined %>%
+    st_drop_geometry() %>%
+    group_by(Id_Hexagono) %>%
+    summarise(across(everything(), ~ mean(.x, na.rm = TRUE), .names = "{.col}")) %>%
+    ungroup()
+  
+  grid_sf <- left_join(grid_sf, agregados, by = "Id_Hexagono")
+  return(grid_sf)
+}
+
+# Aplicar a cada capa
+grid_2019 <- agregar_al_grid(grid, soy_2019)
+grid_2021 <- agregar_al_grid(grid_2019, soy_2021) # ya acumula 2019
+grid_2023 <- agregar_al_grid(grid_2021, soy_2023) # acumula 2019+2021+2023
+
+st_write(grid_2023, "soy_performance_completo.geojson", delete_dsn = TRUE)
+
+```
+
+# Exploración y limpieza de datos (Outliers):
+
+Para la capa veris_data, se realizó una etapa de exploración y limpieza de datos con el objetivo de identificar posibles valores atípicos (outliers) que pudieran afectar los análisis posteriores.
+
+Se elaboraron gráficos de histograma y boxplot a fin de visualizar la distribución de las variables y detectar comportamientos anómalos. A partir de esta inspección, se aplicaron filtros simples de outliers, eliminando aquellos valores que se encontraban fuera del intervalo de confianza definido.
+
+```{r}
+# Histograma y boxplot de las tres variables:
+# Se aplican para las 3 variables
+
+setwd("C://Users//Ramiro Manzo//Downloads//pt_rmarckdown//rstudio-project-agro//data_lh")
+veris <- st_read("veris_data.geojson")
+
+Layer <- st_read("veris_data.geojson")
+Parameter <- "ec_surface"
+if (!(Parameter %in% names(Layer))) stop(paste("La columna", Parameter, "no existe."))
+
+# Convertir a numérico y eliminar NA
+valores <- as.numeric(Layer[[Parameter]])
+valores <- na.omit(valores)
+
+# Layout: 2 filas, 1 columna
+layout(matrix(c(1,2), nrow = 2, byrow = TRUE), heights = c(2,1))
+par(mar = c(4,4,2,1))  # margenes
+
+# Histograma
+hist(
+  valores,
+  main = paste("Histograma -", Parameter),
+  xlab = "Linea solida = media // linea punteada = mediana",
+  ylab = "Frecuencia",
+  breaks = 25,
+  col = "lightblue",
+  cex.lab = 1,
+  cex.axis = 1,
+  cex.main = 1.2
+)
+abline(v = mean(valores), col = "red", lwd = 2)
+abline(v = median(valores), col = "green", lty = 2, lwd = 2)
+
+# Boxplot
+boxplot(
+  valores,
+  main = paste("Boxplot -", Parameter),
+  horizontal = TRUE,
+  xlab = Parameter,
+  col = "lightyellow",
+  cex.lab = 1,
+  cex.axis = 1,
+  cex.main = 1.2
+)
+abline(v = mean(valores), col = "red", lwd = 2)
+abline(v = median(valores), col = "green", lty = 2, lwd = 2)
+```
+
+```{r}
+# Outliers:
+# Se aplican para las 3 variables. 
+setwd("C://Users//Ramiro Manzo//Downloads//pt_rmarckdown//rstudio-project-agro//data_lh")
+veris <- st_read("veris_data.geojson")
+
+# Función para eliminar outliers:
+sinoutli <- function(mydat, times_sd = 3, yielcol = "VRYIELDMAS") {
+  if (!(yielcol %in% colnames(mydat))) {
+    stop(paste("La columna", yielcol, "no existe en los datos.")) 
+  }
+
+  n_initial <- nrow(mydat)
+  mydat <- mydat[mydat[[yielcol]] != 0, ]
+  n_after_zero <- nrow(mydat)
+  cat("Se eliminaron", n_initial - n_after_zero, "filas con valor cero.\n")
+
+  Mean <- mean(mydat[[yielcol]], na.rm = TRUE)
+  stde <- sd(mydat[[yielcol]], na.rm = TRUE)
+
+  Lower <- Mean - times_sd * stde
+  Upper <- Mean + times_sd * stde
+
+  mydat[[yielcol]][mydat[[yielcol]] < Lower | mydat[[yielcol]] > Upper] <- NA
+
+  sinout <- mydat[!is.na(mydat[[yielcol]]), ]
+  n_final <- nrow(sinout)
+  cat("Se eliminaron", n_after_zero - n_final, "outliers. Quedaron", n_final, "puntos.\n")
+
+  return(sinout)
+}
+
+# Aplicar:
+veris_sin_outliers <- sinoutli(veris, times_sd = 2.5, yielcol = "ec_surface")
+# Exportar:
+#st_write(veris_sin_outliers, "veris_sin_outliers.geojson", delete_dsn = TRUE)
+
+```
+
+# Interpolacion kriging:  
+
+La capa de hexágonos o los puntos "soy_performance_2019_2021_2023" no representa adecuadamente la distribución espacial de los datos de la capa "veris_data". La distribucion de los puntos "veris_data" están dispersos y dejan grandes áreas sin información dentro de cada hexágono. Por eso, necesito aplicar una interpolación. Esto me permitirá crear una superficie continua que represente mejor la variación de los datos en toda el lote y dentro de cada hexágono. Así, se podra analizar las variables de forma más precisa y obtener resultados más confiables.
+
+```{r read}
+setwd("C://Users//Ramiro Manzo//Downloads//pt_rmarckdown//rstudio-project-agro//data_lh")
+
+library(sf)
+library(gstat)
+library(sp)
+library(automap)
+
+kriging_ec_surface <- function(file_path) {
+  cat("Procesando:", file_path, "\n")
+  
+  data <- st_read(file_path, quiet = TRUE)
+  data <- st_make_valid(data)
+  
+  # Verificar columna
+  if (!"ec_surface" %in% names(data)) stop("La columna 'ec_surface' no existe.")
+  data$ec_surface <- as.numeric(data$ec_surface)
+  data <- data[!is.na(data$ec_surface), ]
+  
+  # Reproyectar a EPSG:32720
+  data <- st_transform(data, 32720)
+  
+  data_sp <- as(data, "Spatial")
+  
+  # Ajuste del variograma automático
+  vgm_model <- autofitVariogram(ec_surface ~ 1, data_sp, cutoff = 250)
+  
+  # Crear grilla desde bounding box
+  bbox <- st_bbox(data)
+  grid_points <- st_make_grid(
+    st_as_sfc(bbox),
+    cellsize = 5,  # metros
+    what = "centers"
+  )
+  
+  if (length(grid_points) < 10) stop("la malla aún tiene pocos puntos (", length(grid_points), ").")
+  
+  # Interpolacion Kriging
+  kriging_result <- krige(
+    formula = ec_surface ~ 1,
+    locations = data_sp,
+    newdata = grid_points,
+    model = vgm_model$var_model,
+    nmax = 25,
+    nmin = 7,
+    maxdist = 40
+  )
+  
+  # Convertir resultado a sf
+  kriging_sf <- st_as_sf(kriging_result)
+  kriging_sf <- st_set_crs(kriging_sf, 32720)
+  
+  # Guardar resultado
+  output_path <- file.path(dirname(file_path), "veris_sin_outliers_ec_surface_kriging.geojson")
+  if (file.exists(output_path)) file.remove(output_path)
+  
+  st_write(kriging_sf, output_path, driver = "GeoJSON", quiet = TRUE)
+  cat("interpolacion completada. Guardado en:\n", output_path, "\n")
+  
+  # Visualización rapida
+  plot(kriging_sf["var1.pred"], main = "Interpolacion Kriging - ec_surface")
+}
+
+# Ejecutar
+kriging_ec_surface("C://Users//Ramiro Manzo//Downloads//pt_rmarckdown//rstudio-project-agro//data_lh//veris_sin_outliers.geojson")
+
+```
+# Join espacial: 
+Para generar una tabla consolidada de datos, se realiza una unión espacial entre la capa de hexágonos "Grid_con_puntos" y las variables interpoladas provenientes de la capa "veris_data".
+
+```{r}
+setwd("C://Users//Ramiro Manzo//Downloads//pt_rmarckdown//rstudio-project-agro//data_lh")
+
+library(sf)
+library(dplyr)
+
+grid <- st_read("soy_performance_completo.geojson")
+veris <- st_read("veris_sin_outliers_ec_surface_kriging.geojson")
+
+
+# CRS
+if (st_crs(grid) != st_crs(veris)) {
+  veris <- st_transform(veris, st_crs(grid))
+}
+
+grid <- grid %>% mutate(hex_id = row_number())
+
+joined <- st_join(veris, grid, join = st_intersects, left = FALSE)
+
+resumen <- joined %>%
+  st_set_geometry(NULL) %>%  # eliminamos geometría para acelerar agregación
+  group_by(hex_id) %>%
+  summarise(
+     ec_surface = mean(var1.pred, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ grid_final <- grid %>%
+   left_join(resumen, by = "hex_id")  # ahora sí, la geometría se mantiene
+
+grid_final %>% 
+  as.data.frame() %>%   # para que no imprima geometría larga
+  select(-geometry) %>%
+  head(20) 
+
+st_write(grid_final, "Grid_final2.geojson", delete_dsn = TRUE)
+
+```
+
