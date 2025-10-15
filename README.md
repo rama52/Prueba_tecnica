@@ -35,8 +35,8 @@ En este repositorio podemos encontrar:
 * Se emplea **Jupyter Notebook** para analizar los conjuntos de datos, ejecutar el análisis espacial avanzado y crear visualizaciones. 
 
 # Estructura de archivos del repositorio: 
-prueba_tecnica/
-└── pt_agtech_Ramiro_Manzo/
+```bash
+pt_agtech_Ramiro_Manzo/
 ├── docker-compose.yml
 ├── REDMI.md
 ├── README.md
@@ -70,3 +70,6 @@ prueba_tecnica/
     ├── la_magdalena_L4.geojson
     ├── soy_performance_2019_2021_2023.geojson
     └── veris_data.gpkg
+
+
+
