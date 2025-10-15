@@ -9,11 +9,11 @@ En este repositrio podemos encontrar:
 -Conjunto de scripts para gestionar datos y cargarlos en una base de datos
 -Cuadernos Jupyter para realizar el preprocesamiento y Postprocesamiento de los datos espaciales
 
-Parte 1. Configuración de la infraestructura con Docker y carga de los datos:
+# Parte 1. Configuración de la infraestructura con Docker y carga de los datos:
 -Se creó un entorno basado en Docker Compose para el desarrollo del proyecto. Este entorno, esta compuesto por una base de datos PostgreSQL(v16) donde se le instalo la extensión PostGIS(v3.5) y la extensión h3-pg (Uber), y cuenta con un contenedor de Python 3.9 y sus principales dependencias espaciales.
 -La carga de los datos a la base de datos se realizo por medio de un script en Python que se ejecuta por consola.
 
-Parte 2.Análisis de los datos: pre y posprocesamiento
+# Parte 2.Análisis de los datos: pre y posprocesamiento
 -Preprocesamiento: por fuera del entorno dockerizado se realizo una exploracion y preparacion de la informacion espacial. En esta etapa, se hiso uso de las herramientas de QGIS para la inspeccion visual y Rmarckdown para la validacion y limpieza de datos.
 -Posprocesamiento: se utilizan los datos cargados en la Base de datos y se utiliza Jupyter Notebook para analizar los conjuntos de datos y crear visualizaciones. 
 
