@@ -1,6 +1,6 @@
 ## Contexto General
 
-El contenido del repositorio corresponde al desarrollo de una prueba técnica descripta en este repositorio: [hipervínculo al repo].
+El contenido del repositorio corresponde al desarrollo de una prueba técnica descripta en este repositorio: [hipervínculo al repo](https://github.com/cambium-earth/agtech-gdd-test?tab=readme-ov-file)].
 
 En este repositorio podemos encontrar:
 
