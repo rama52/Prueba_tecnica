@@ -4,7 +4,7 @@ El contenido del repositorio corresponde al desarrollo de una prueba técnica de
 
 En este repositorio podemos encontrar:
 
-* Configuración del entorno **Dockerizado** y pasos para su uso (aquí).
+* Configuración del entorno **Dockerizado** y pasos para su uso.
 * Conjunto de *scripts* para gestionar datos y cargarlos en una base de datos.
 * Cuadernos Jupyter para realizar el preprocesamiento y el posprocesamiento de los datos espaciales.
 
