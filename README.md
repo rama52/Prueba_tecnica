@@ -17,7 +17,6 @@ En este repositorio podemos encontrar:
 * Se creó un entorno basado en **Docker Compose** para el desarrollo del proyecto. Este entorno **está compuesto** por:
     * Una base de datos **PostgreSQL (v16)** donde **se le instaló** la extensión **PostGIS (v3.5)** y la extensión **h3-pg (Uber)**.
     * Un contenedor de **Python 3.9** y sus principales dependencias espaciales.
-    * (Puede encontrar más detalles sobre esta configuración aquí: [hipervínculo]).
 * La carga de los datos a la base de datos **se realizó** por medio de un *script* en Python que se ejecuta por consola.
 
 ---
@@ -27,7 +26,7 @@ En este repositorio podemos encontrar:
 ### Preprocesamiento
 
 * Por fuera del entorno Dockerizado **se realizó** una exploración y preparación de la información espacial.
-* En esta etapa, **se hizo** uso de las herramientas de **QGIS** para la inspección visual y **RMarkdown** para la validación y limpieza de datos.
+* En esta etapa, **se hizo** uso de las herramientas de **QGIS** para la inspección visual y **R Markdown** para la validación y limpieza de datos.
 
 ### Posprocesamiento
 
