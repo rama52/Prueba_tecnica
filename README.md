@@ -18,59 +18,39 @@ Parte 2.Análisis de los datos: pre y posprocesamiento
 -Posprocesamiento: se utilizan los datos cargados en la Base de datos y se utiliza Jupyter Notebook para analizar los conjuntos de datos y crear visualizaciones. 
 
 Estructura de archivos del repositorio: 
-C:.
-|   docker-compose.yml
-|   flujo.txt
-|
-+---data
-|       Grid_final.geojson
-|       la_magdalena_L4.geojson
-|       soy_performance_2019_2021_2023.geojson
-|       veris_data.gpkg
-|
-+---postgis_h3
-|       Dockerfile
-|       para el redmi.txt
-|
-+---python_geo
-|   |   Dockerfile
-|   |
-|   \---Preprocesamiento
-|           altimetry_kriging.geojson
-|           ec_subsurface_kriging.geojson
-|           ec_surface_kriging.geojson
-|           Grid_final.geojson
-|           preprocessing.pdf
-|           preprocessing.Rmd
-|
-\---workspace
-    +---.ipynb_checkpoints
-    |       load_parquet-checkpoint.ipynb
-    |       prueba-checkpoint.ipynb
-    |
-    +---.Trash-0
-    |   +---files
-    |   |   |   load_data.py
-    |   |   |   posprocessing.ipynb
-    |   |   |   preprocessing.ipynb
-    |   |   |
-    |   |   \---preprocessing
-    |   \---info
-    |           load_data.py.trashinfo
-    |           posprocessing.ipynb.trashinfo
-    |           preprocessing.ipynb.trashinfo
-    |           preprocessing.trashinfo
-    |
-    +---notebooks
-    |   |   Bonus.ipynb
-    |   |   posprocessing.ipynb
-    |   |   Preguntas_finales.ipynb
-    |   |
-    |   \---.ipynb_checkpoints
-    |           Bonus-checkpoint.ipynb
-    |           posprocessing-checkpoint.ipynb
-    |           Preguntas_finales-checkpoint.ipynb
-    |
-    \---scripts
-            load_data.py
+prueba_tecnica/
+└── pt_agtech_Ramiro_Manzo/
+    ├── docker-compose.yml              
+    ├── REDMI.md                        
+    ├── README.md                        
+    │
+    ├── postgis_h3/                     
+    │   ├── Dockerfile
+    │   └── para_el_redmi.txt           
+    │
+    ├── python_geo/                     
+    │   ├── Dockerfile
+    │   └── Preprocesamiento/
+    │       ├── altimetry_kriging.geojson
+    │       ├── ec_subsurface_kriging.geojson
+    │       ├── ec_surface_kriging.geojson
+    │       ├── Grid_final.geojson
+    │       ├── preprocessing.pdf
+    │       └── preprocessing.Rmd
+    │
+    ├── workspace/                      
+    │   ├── notebooks/
+    │   │   ├── Bonus.ipynb
+    │   │   ├── posprocessing.ipynb
+    │   │   └── Preguntas_finales.ipynb
+    │   │
+    │   └── scripts/
+    │       └── load_data.py           
+    │
+    └── data/                           
+        ├── Grid_final.geojson
+        ├── la_magdalena_L4.geojson
+        ├── soy_performance_2019_2021_2023.geojson
+        └── veris_data.gpkg
+
 
