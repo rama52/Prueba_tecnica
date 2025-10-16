@@ -6,7 +6,7 @@ En este repositorio podemos encontrar:
 
 * Configuración del entorno **Dockerizado** y pasos para su uso.
 * Conjunto de *scripts* para gestionar datos y cargarlos en una base de datos.
-* Cuadernos Jupyter para realizar el preprocesamiento y el posprocesamiento de los datos espaciales.
+* Cuadernos interactivos (Jupyter y R Markdown) para el preprocesamiento y posprocesamiento de datos espaciales.
 
 ---
 
