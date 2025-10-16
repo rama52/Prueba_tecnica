@@ -41,7 +41,6 @@ pt_agtech_Ramiro_Manzo/
 
 ├── postgis_h3/
 │   ├── Dockerfile
-│   └── para_el_redmi.txt
 
 ├── python_geo/
 │   ├── Dockerfile
@@ -61,6 +60,7 @@ pt_agtech_Ramiro_Manzo/
 │   │
 │   └── scripts/
 │       └── load_data.py
+│   └── README.md 
 
 └── data/
     ├── Grid_final.geojson
