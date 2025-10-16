@@ -37,9 +37,7 @@ En este repositorio podemos encontrar:
 ```bash
 pt_agtech_Ramiro_Manzo/
 ├── docker-compose.yml
-├── REDMI.md
 ├── README.md
-├── flujo.txt
 
 ├── postgis_h3/
 │   ├── Dockerfile
