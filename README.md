@@ -54,7 +54,6 @@ pt_agtech_Ramiro_Manzo/
 
 ├── workspace/
 │   ├── notebooks/
-│   │   ├── Bonus.ipynb
 │   │   ├── posprocessing.ipynb
 │   │   └── Preguntas_finales.ipynb
 │   │
@@ -65,7 +64,7 @@ pt_agtech_Ramiro_Manzo/
 └── data/
     ├── Grid_final.geojson
     ├── la_magdalena_L4.geojson
-    ├── soy_performance_2019_2021_2023.geojson
+    ├── soy_performance_2019_2021_2023.parquet
     └── veris_data.gpkg
 
 
