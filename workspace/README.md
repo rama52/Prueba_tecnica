@@ -1,78 +1,78 @@
-# Configuración del Entorno: Infraestructura Geoespacial Dockerizada
+# Environment Setup: Dockerized Geospatial Infrastructure
 
-Esta sección describe la **arquitectura** y los **pasos necesarios** para levantar el entorno de desarrollo y análisis geoespacial del proyecto utilizando **Docker Compose**.
-
----
-
-## 1. Arquitectura del Stack Geoespacial
-
-Para el manejo de datos espaciales y la reproducibilidad del análisis, se creó un entorno compuesto por **dos servicios interconectados**:  
-uno para la **base de datos geoespacial** y otro para el **análisis en Python**.
+This section describes the **architecture** and **necessary steps** to launch the project's geospatial development and analysis environment using **Docker Compose**.
 
 ---
 
-### Base de Datos (`db`)
+## 1. Geospatial Stack Architecture
 
-| **Componente** | **Versión / Extensión** | **Uso Principal** |
-|----------------|--------------------------|-------------------|
-| PostgreSQL     | v16                      | Almacenamiento seguro y persistente de datos. |
-| PostGIS        | v3.5                     | Funciones nativas para manipulación y consulta de geometrías. |
-| H3-PG (Uber)   | —                        | Extensión para análisis de grillas hexagonales escalables (H3). |
+To handle spatial data and ensure analysis reproducibility, an environment was created consisting of **two interconnected services**:  
+one for the **geospatial database** and another for **Python-based analysis**.
 
 ---
 
-### Entorno de Análisis (`python`)
+### Database (`db`)
 
-| **Componente** | **Versión** | **Librerías y Herramientas** |
-|----------------|-------------|-------------------------------|
-| Python         | 3.9         | GDAL, GEOS, PROJ (nativos configurados). |
-| Herramientas   | JupyterLab  | GeoPandas, Shapely, Fiona, Rasterio, PyProj, GeoPy, Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn, psycopg2, Folium, Leafmap. |
+| **Component** | **Version / Extension** | **Main Use** |
+|--------------|-------------------------|--------------|
+| PostgreSQL   | v16                     | Secure and persistent data storage. |
+| PostGIS      | v3.5                    | Native functions for geometry manipulation and queries. |
+| H3-PG (Uber) | —                       | Extension for scalable hexagonal grid analysis (H3). |
 
 ---
 
-## 2. Configuración y Comunicación de la Red
+### Analysis Environment (`python`)
 
-Los contenedores se gestionan mediante un único archivo **`docker-compose.yml`**, el cual:
+| **Component** | **Version** | **Libraries and Tools** |
+|--------------|-------------|-------------------------|
+| Python       | 3.9         | GDAL, GEOS, PROJ (natively configured). |
+| Tools        | JupyterLab  | GeoPandas, Shapely, Fiona, Rasterio, PyProj, GeoPy, Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn, psycopg2, Folium, Leafmap. |
 
-- Construye las imágenes a partir de sus respectivos **Dockerfile**.  
-- Mantiene una **red interna de trabajo (`geo_network`)** para la comunicación segura entre contenedores.  
-- Define **variables de entorno** en el contenedor de Python para facilitar la conexión a la base de datos  
-  (por ejemplo: `POSTGRES_HOST=db`).  
+---
+
+## 2. Network Configuration and Communication
+
+The containers are managed through a single **`docker-compose.yml`** file, which:
+
+- Builds images from their respective **Dockerfile**.  
+- Maintains an **internal work network (`geo_network`)** for secure communication between containers.  
+- Defines **environment variables** in the Python container to facilitate database connection  
+  (e.g.: `POSTGRES_HOST=db`).  
 
 ---
 ## 
-## 3. Guía de Uso Rápida
+## 3. Quick Start Guide
 
-### 3.1. Construir las Imágenes
+### 3.1. Build the Images
 
-### Antes de levantar el stack por primera vez, ejecutá:
+### Before launching the stack for the first time, run:
 
 ```bash
 docker-compose build
 ```
-###  3.2. Levantar el stack completo
+###  3.2. Launch the Full Stack
 
 ```bash
 docker-compose up -d
 ```
 
-### Esto iniciará los dos servicios:
+### This will start both services:
 
-| Servicio   | Descripción                                                       | Conexión                                                           |
-| ---------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **db**     | Contenedor con PostGIS listo para análisis espaciales.            | Datos persistentes en `pgdata/`                                    |
-| **python** | Contenedor con Python 3.9 + JupyterLab y librerías geoespaciales. | La carpeta local `./workspace` está montada dentro del contenedor. |
+| Service   | Description                                                    | Connection                                                      |
+|-----------|----------------------------------------------------------------|-----------------------------------------------------------------|
+| **db**    | Container with PostGIS ready for spatial analysis.             | Persistent data in `pgdata/`                                    |
+| **python**| Container with Python 3.9 + JupyterLab and geospatial libraries.| The local folder `./workspace` is mounted inside the container. |
 
-### 3.3. Acceder a la Base de Datos (psql)
-- Para ingresar a la base de datos dentro del contenedor (por ejemplo, para verificar tablas o extensiones instaladas):
+### 3.3. Access the Database (psql)
+- To access the database inside the container (e.g., to check tables or installed extensions):
 
 ```bash
 docker exec -it pg_geo psql -U postgres -d agtech_db
 
 ```
-### 3.4. Acceder al entorno JupyterLab
+### 3.4. Access the JupyterLab Environment
 
-### Abrí tu navegador y entrá en: http://localhost:8888
+### Open your browser and go to: http://localhost:8888
 
-### Desde ahí podés trabajar en los notebooks montados en el directorio workspace/notebooks/.
+### From there you can work on the notebooks mounted in the workspace/notebooks/ directory.
 

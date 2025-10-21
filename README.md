@@ -1,39 +1,39 @@
-## Contexto General
+## General Context
 
-El contenido del repositorio corresponde al desarrollo de una prueba técnica descripta [aqui](https://github.com/cambium-earth/agtech-gdd-test?tab=readme-ov-file).
+This repository contains the development of a technical test described [here](https://github.com/cambium-earth/agtech-gdd-test?tab=readme-ov-file).
 
-En este repositorio podemos encontrar:
+In this repository you will find:
 
-* Configuración del entorno **Dockerizado** y pasos para su uso.
-* Conjunto de *scripts* para gestionar datos y cargarlos en una base de datos.
-* Cuadernos interactivos (Jupyter y R Markdown) para el preprocesamiento y posprocesamiento de datos espaciales.
-
----
-
-## Parte 1. Configuración de la Infraestructura con Docker y Carga de los Datos
-
-### Infraestructura
-
-* Se creó un entorno basado en **Docker Compose** para el desarrollo del proyecto. Este entorno **está compuesto** por:
-    * Una base de datos **PostgreSQL (v16)** donde **se le instaló** la extensión **PostGIS (v3.5)** y la extensión **h3-pg (Uber)**.
-    * Un contenedor de **Python 3.9** y sus principales dependencias espaciales.
-* La carga de los datos a la base de datos **se realizó** por medio de un *script* en Python que se ejecuta por consola.
+* **Dockerized** environment configuration and usage instructions.
+* Set of *scripts* for data management and database loading.
+* Interactive notebooks (Jupyter and R Markdown) for preprocessing and postprocessing spatial data.
 
 ---
 
-## Parte 2. Análisis de los Datos: Pre y Posprocesamiento
+## Part 1. Infrastructure Setup with Docker and Data Loading
 
-### Preprocesamiento
+### Infrastructure
 
-* Por fuera del entorno Dockerizado **se realizó** una exploración y preparación de la información espacial.
-* En esta etapa, **se hizo** uso de las herramientas de **QGIS** para la inspección visual y **R Markdown** para la validación y limpieza de datos.
+* A **Docker Compose** based environment was created for project development. This environment **consists of**:
+    * A **PostgreSQL (v16)** database with installed extensions **PostGIS (v3.5)** and **h3-pg (Uber)**.
+    * A **Python 3.9** container with its main spatial dependencies.
+* Data loading into the database was **performed** through a Python *script* that runs via console.
 
-### Posprocesamiento
+---
 
-* Se utilizan los datos cargados en la Base de datos.
-* Se emplea **Jupyter Notebook** para analizar los conjuntos de datos, ejecutar el análisis espacial avanzado y crear visualizaciones. 
+## Part 2. Data Analysis: Pre and Postprocessing
 
-# Estructura de archivos del repositorio: 
+### Preprocessing
+
+* Outside the Dockerized environment, spatial data exploration and preparation was **performed**.
+* At this stage, **QGIS** tools were used for visual inspection and **R Markdown** for data validation and cleaning.
+
+### Postprocessing
+
+* Data loaded in the database is utilized.
+* **Jupyter Notebook** is used to analyze datasets, perform advanced spatial analysis, and create visualizations.
+
+# Repository File Structure:
 ```bash
 pt_agtech_Ramiro_Manzo/
 ├── docker-compose.yml
