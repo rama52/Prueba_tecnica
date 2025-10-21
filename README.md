@@ -1,4 +1,4 @@
-## General Context
+### General Context
 
 This repository contains the development of a technical test described [here](https://github.com/cambium-earth/agtech-gdd-test?tab=readme-ov-file).
 
