@@ -1,4 +1,4 @@
-### General Context
+## General Context
 
 This repository contains the development of a technical test described [here](https://github.com/cambium-earth/agtech-gdd-test?tab=readme-ov-file).
 
@@ -33,7 +33,7 @@ In this repository you will find:
 * Data loaded in the database is utilized.
 * **Jupyter Notebook** is used to analyze datasets, perform advanced spatial analysis, and create visualizations.
 
-# Repository File Structure:
+## Repository File Structure:
 ```bash
 pt_agtech_Ramiro_Manzo/
 ├── docker-compose.yml
