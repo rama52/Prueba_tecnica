@@ -44,7 +44,7 @@ pt_agtech_Ramiro_Manzo/
 
 ├── python_geo/
 │   ├── Dockerfile
-│   └── Preprocesamiento/
+│   └── preprocessing/
 │       ├── altimetry_kriging.geojson
 │       ├── ec_subsurface_kriging.geojson
 │       ├── ec_surface_kriging.geojson
@@ -54,8 +54,8 @@ pt_agtech_Ramiro_Manzo/
 
 ├── workspace/
 │   ├── notebooks/
-│   │   ├── posprocessing.ipynb
-│   │   └── Preguntas_finales.ipynb
+│   │   ├── postprocessing.ipynb
+│   │   └── final_questions.ipynb
 │   │
 │   └── scripts/
 │       └── load_data.py
