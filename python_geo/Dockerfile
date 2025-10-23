@@ -36,7 +36,12 @@ RUN pip install --no-cache-dir \
     seaborn==0.13.2 \
     scikit-learn==1.5.1 \
     leafmap==0.31.2 \
-    sqlalchemy==2.0.22
+    sqlalchemy==2.0.22 \
+    # 🔽 Librerías nuevas agregadas (22-10-25)
+    libpysal==4.8.1 \
+    esda==2.5.1 \
+    contextily==1.6.2 \
+    pyarrow==17.0.0
 
 # Crear directorio de trabajo
 WORKDIR /workspace
@@ -46,3 +51,13 @@ EXPOSE 8888
 
 # Comando por defecto: lanzar JupyterLab sin token
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--no-browser", "--allow-root", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+
+
+
+
+# 🔽 Librerías nuevas agregadas
+    libpysal==4.8.1 \
+    esda==2.5.1 \
+    contextily==1.6.2 \
+    pyarrow==17.0.0
+
