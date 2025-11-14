@@ -1,24 +1,27 @@
-# Imagen base: Python 3.9 (estable y compatible con librerías geoespaciales)
-FROM python:3.9-slim-bullseye
+### ETAPA 1: BUILDER (Compilación y Preparación de Entorno) ###
 
-# Evita prompts interactivos en la instalación
+FROM python:3.11-slim-bookworm AS builder
+
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalar dependencias del sistema necesarias para GDAL, GEOS, PROJ y Spatialite
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gdal-bin libgdal-dev libproj-dev proj-data proj-bin \
-    libgeos-dev libspatialindex-dev libsqlite3-mod-spatialite \
-    build-essential wget curl ca-certificates \
- && rm -rf /var/lib/apt/lists/*
+    gdal-bin libproj25 proj-data proj-bin \
+    libgeos-dev libsqlite3-mod-spatialite libpq5 \
+    wget curl ca-certificates \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Variables de entorno para GDAL y PROJ
+
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 ENV GDAL_DATA=/usr/share/gdal
 ENV PROJ_LIB=/usr/share/proj
 
-# Instalar librerías Python (versiones estables y probadas)
+RUN pip install --no-cache-dir --upgrade pip
+
+# Librerías Python
 RUN pip install --no-cache-dir \
+    earthengine-api==0.1.419 \
+    google-api-python-client==2.138.0 \
     numpy==1.26.4 \
     pandas==2.2.2 \
     geopandas==0.14.4 \
@@ -37,27 +40,40 @@ RUN pip install --no-cache-dir \
     scikit-learn==1.5.1 \
     leafmap==0.31.2 \
     sqlalchemy==2.0.22 \
-    # 🔽 Librerías nuevas agregadas (22-10-25)
     libpysal==4.8.1 \
     esda==2.5.1 \
     contextily==1.6.2 \
-    pyarrow==17.0.0
+    pyarrow==17.0.0 \
+    rasterstats==0.19.0 \
+    h3==3.7.6   # ← Hexágonos Uber H3
 
-# Crear directorio de trabajo
+
+### ETAPA 2: FINAL (Runtime) ###
+
+FROM python:3.11-slim-bookworm
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gdal-bin libproj25 proj-data proj-bin \
+    libgeos-dev libsqlite3-mod-spatialite libpq5 \
+    wget curl ca-certificates \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENV GDAL_DATA=/usr/share/gdal
+ENV PROJ_LIB=/usr/share/proj
+
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+
+# Copia los ejecutables (como 'jupyter')
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+
+# assets de JupyterLab
+COPY --from=builder /usr/local/share/jupyter/ /usr/local/share/jupyter/
+
 WORKDIR /workspace
+COPY . /workspace
 
-# Exponer el puerto de JupyterLab
 EXPOSE 8888
 
-# Comando por defecto: lanzar JupyterLab sin token
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--no-browser", "--allow-root", "--NotebookApp.token=''", "--NotebookApp.password=''"]
-
-
-
-
-# 🔽 Librerías nuevas agregadas
-    libpysal==4.8.1 \
-    esda==2.5.1 \
-    contextily==1.6.2 \
-    pyarrow==17.0.0
-
