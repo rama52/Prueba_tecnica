@@ -25,7 +25,7 @@ one for the **geospatial database** and another for **Python-based analysis**.
 
 | **Component** | **Version** | **Libraries and Tools** |
 |--------------|-------------|-------------------------|
-| Python       | 3.9         | GDAL, GEOS, PROJ (natively configured). |
+| Python       | 3.11        | GDAL, GEOS, PROJ (natively configured). |
 | Tools        | JupyterLab  | GeoPandas, Shapely, Fiona, Rasterio, PyProj, GeoPy, Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn, psycopg2, Folium, Leafmap. |
 
 ---
